@@ -94,7 +94,7 @@ figure, contour(X,Y,Z.*(Z>=0)), hold on
 x_k = rand(5,1)*(max(x)-min(x))+min(x)
 y_k =rand(5,1)*(max(y)-min(y))+min(y)
 
-quiver(x_k,y_k,prox_f1(x_k,lambda)-x_k, prox_f1(y_k,lambda)-y_k, '-r', 'linewidth', 0.8)
+quiver(x_k,y_k,prox_f1(x_k,lambda)-x_k, prox_f1(y_k,lambda)-y_k, '-r', 'linewidth', 0.8), axis off
 save_pdf_without_whitespace('prox_f1_2d.png')
 
 Z = f2(X,Y);
@@ -102,7 +102,7 @@ figure, contour(X,Y,Z.*(Z>=0)), hold on
 x_k = rand(5,1)*(max(x)-min(x))+min(x)
 y_k =rand(5,1)*(max(y)-min(y))+min(y)
 
-quiver(x_k,y_k,proxy_f2(x_k,lambda)-x_k, proxy_f2(y_k,lambda)-y_k, '-r', 'linewidth', 0.8)
+quiver(x_k,y_k,proxy_f2(x_k,lambda)-x_k, proxy_f2(y_k,lambda)-y_k, '-r', 'linewidth', 0.8), axis off
 save_pdf_without_whitespace('prox_f2_2d.png')
 %%
 x = -1:0.1:1;
