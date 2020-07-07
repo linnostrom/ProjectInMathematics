@@ -24,7 +24,7 @@ fill(x,f3(x), [0    0.4470    0.7410]), xlabel('x'), ylabel('f(x)')
 legend('f(x)', 'epi f')
 set(gca,'Fontsize',20);
 save_pdf_without_whitespace('f3.png')
-%% Convec sets
+%% Convex sets
 %code to plot a heart shape in MATLAB
 %set up mesh
 clc; close all
@@ -104,6 +104,49 @@ y_k =rand(5,1)*(max(y)-min(y))+min(y)
 
 quiver(x_k,y_k,proxy_f2(x_k,lambda)-x_k, proxy_f2(y_k,lambda)-y_k, '-r', 'linewidth', 0.8), axis off
 save_pdf_without_whitespace('prox_f2_2d.png')
+
+%% Show separability of proxy in 3D
+rng(1)
+close all; clc
+x = -1:0.1:1;
+y = -1:0.1:1;
+z = x.^2+(y.^2);
+lambda = 5;
+[X,Y] = meshgrid(x,y);
+Z = X.^2+Y.^2;
+
+f1 = @(x,y,z) 1/2*(x.^2+y.^2);
+f2 = @(x,y) abs(x)+abs(y);
+
+prox_f1 = @(x,lambda) x./(lambda + 1);
+C = f1(X,Y);
+figure, contour3(X,Y,Z), hold on
+
+x_k = rand(5,1)*(max(x)-min(x))+min(x)
+y_k =rand(5,1)*(max(y)-min(y))+min(y)
+z_k =rand(5,1)*(max(z)-min(z))+min(z)
+
+
+quiver3(x_k,y_k,z_k,prox_f1(x_k,lambda)-x_k, prox_f1(y_k,lambda)-y_k, prox_f1(z_k,lambda)-z_k, '-r', 'linewidth', 0.8), axis off
+save_pdf_without_whitespace('prox_f1_3d.png')
+
+Z = f2(X,Y);
+figure, contour3(X,Y,Z), hold on
+x_k = rand(5,1)*(max(x)-min(x))+min(x)
+y_k =rand(5,1)*(max(y)-min(y))+min(y)
+z_k =rand(5,1)*(max(z)-min(z))+min(z)
+
+quiver3(x_k,y_k,z_k,proxy_f2(x_k,lambda)-x_k, proxy_f2(y_k,lambda)-y_k, proxy_f2(z_k,lambda)-z_k, '-r', 'linewidth', 0.8), axis off
+save_pdf_without_whitespace('prox_f2_3d.png')
+
+figure, contour3(X,Y,Z+C), hold on
+x_k = rand(5,1)*(max(x)-min(x))+min(x)
+y_k =rand(5,1)*(max(y)-min(y))+min(y)
+z_k =rand(5,1)*(max(z)-min(z))+min(z)
+quiver3(x_k,y_k,z_k,proxy_f2(x_k,lambda)+prox_f1(x_k,lambda)-x_k, proxy_f2(y_k,lambda)+prox_f1(y_k,lambda)-y_k, proxy_f2(z_k,lambda)+prox_f1(z_k,lambda)-z_k, '-r', 'linewidth', 0.8), axis off
+save_pdf_without_whitespace('prox_f12_3d.png')
+
+
 %%
 x = -1:0.1:1;
 y = 0.1:0.1:1;
