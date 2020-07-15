@@ -257,6 +257,80 @@ for lambda = lambda_vec
     
 end
 
+%%
+clc ;clear all; close all
+rng(1)
+
+N = 200;
+M = 100;
+
+A = rand(N,M);
+x = rand(M,1);
+
+b = A*x + rand(N,1);
+
+N_inter = 10000;
+
+lambda_max = max(eig(A'*A));
+x_k = rand(M,1);
+t = 1/lambda_max;
+error = zeros(1,N_inter);
+
+for it = 1: N_inter
+    x_k = prox_l1(x_k-t*A'*(A*x_k-b),t);
+    error(it) = 1/2*norm(A*x_k-b,2)^2+ norm(x_k,1);
+end
+
+N_plot = 8000;
+ext = (error-error(end))/error(end);
+ext = ext(ext<1);
+ext = ext(1:N_plot)
+figure,semilogy(1:length(ext), ext), ylabel('(f(x_k)-f^*)/f^*'), xlabel('k')
+save_pdf_without_whitespace3('A_rand.png')
+
+%%
+clc ;clear all; close all
+rng(1)
+
+N = 200;
+M = 100;
+
+A = randn(N,M);
+x = randn(M,1);
+
+b = A*x + rand(N,1);
+
+N_inter = 10000;
+
+lambda_max = max(eig(A'*A));
+x_k = rand(M,1);
+t = 1/lambda_max;
+error = zeros(1,N_inter);
+
+for it = 1: N_inter
+    x_k = prox_l1(x_k-t*A'*(A*x_k-b),t);
+    error(it) = 1/2*norm(A*x_k-b,2)^2+ norm(x_k,1);
+end
+
+N_plot = 100;
+ext = (error-error(end))/error(end);
+ext = ext(ext<1);
+ext = ext(1:N_plot)
+figure,semilogy(1:length(ext), ext), ylabel('(f(x_k)-f^*)/f^*'), xlabel('k')
+set(gca,'Fontsize',12);
+save_pdf_without_whitespace3('A_randn.png')
+
+%%
+
+function x_k = prox_l1(x,t)
+%x(i) = (x(i)-t)*(x(i)>t)+(x(i)+t)*(x(i)<-t)
+x = max(abs(x)-t,0).*sign(x);
+
+
+x_k = x;
+end
+
+
 function x_k_1 = proxy_f2(z,lambda)
 x_k_1 = (z-lambda).*(z>=lambda) + (z+lambda).*(z<=-lambda);
 end
