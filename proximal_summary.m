@@ -257,7 +257,96 @@ for lambda = lambda_vec
     
 end
 
-%%
+%% Iteration plot lambda
+rng(1)
+close all; clc
+
+x_0 = 10;
+y_0 = 10;
+z_0 = 10;
+
+c = {'-.bl','-bl','.-.bl','--bl'};
+f1 = @(x,y,z) 1/2*(x.^2+y.^2+z.^2);
+f2 = @(x,y,z) abs(x)+abs(y)+abs(z);
+
+prox_f1 = @(x,lambda) x./(lambda + 1);
+lambda_vec = [10,5,3,1];
+
+
+j = 1;
+for lambda = lambda_vec
+    x_k = x_0;
+    y_k = y_0;
+    z_k = z_0;
+    N_iter = 10;
+    obj_value = zeros(N_iter,length(lambda_vec));
+    for i = 1 : N_iter 
+        obj_value(i,j) = f1(x_k,y_k,z_k);
+        x_k = prox_f1(x_k,lambda);
+        y_k = prox_f1(y_k,lambda);
+        z_k = prox_f1(z_k,lambda);       
+    end
+
+    figure(1) ,hold on, plot(1:N_iter, log(obj_value(:,j)),c{j})
+    xlabel('Iteration k'), ylabel('log f(x_k) ')
+    j = j+1;
+    
+end
+legend(['\lambda = ', num2str(lambda_vec(1))], ['\lambda = ', num2str(lambda_vec(2))], ['\lambda = ', num2str(lambda_vec(3))],['\lambda = ', num2str(lambda_vec(4))])
+figure(1), axis([1,N_iter,min(min(log(obj_value))), max(max(log(obj_value)))]),save_pdf_without_whitespace3('prox_f1_3d_lambdaiter_1.png')
+
+j = 1;
+for lambda = lambda_vec
+    x_k = x_0;
+    y_k = y_0;
+    z_k = z_0;
+    N_iter = 10;
+    obj_value = zeros(N_iter,length(lambda_vec));
+    for i = 1 : N_iter 
+        if f2(x_k,y_k,z_k) > 0
+            obj_value(i,j) = log(f2(x_k,y_k,z_k));
+        else
+            obj_value(i,j) = 0;
+        end
+        
+        x_k = proxy_f2(x_k,lambda);
+        y_k = proxy_f2(y_k,lambda);
+        z_k = proxy_f2(z_k,lambda);     
+        
+    end
+
+    figure(2) ,hold on, plot(1:N_iter, obj_value(:,j),c{j})
+    xlabel('Iteration k'), ylabel('log f(x_k) ')
+    j = j+1;
+    
+end
+legend(['\lambda = ', num2str(lambda_vec(1))], ['\lambda = ', num2str(lambda_vec(2))], ['\lambda = ', num2str(lambda_vec(3))],['\lambda = ', num2str(lambda_vec(4))])
+figure(2), axis([1,N_iter,min(min((obj_value))), max(max((obj_value)))]),save_pdf_without_whitespace3('prox_f1_3d_lambdaiter_2.png')
+
+j = 1;
+for lambda = lambda_vec
+    
+    x_k = x_0;
+    y_k = y_0;
+    z_k = z_0;
+    N_iter = 20;
+    obj_value = zeros(N_iter,length(lambda_vec));
+    for i = 1 : N_iter 
+        obj_value(i,j) = f1(x_k,y_k,z_k)+ f2(x_k,y_k,z_k);
+        x_k = prox_f1(x_k,lambda)+proxy_f2(x_k,lambda);
+        y_k = prox_f1(y_k,lambda)+proxy_f2(y_k,lambda);
+        z_k = prox_f1(z_k,lambda)+proxy_f2(z_k,lambda);       
+    end
+
+    figure(3) ,hold on, plot(1:N_iter, log(obj_value(:,j)),c{j})
+    xlabel('Iteration k'), ylabel('log f(x_k) ')
+    j = j+1;
+end
+legend(['\lambda = ', num2str(lambda_vec(1))], ['\lambda = ', num2str(lambda_vec(2))], ['\lambda = ', num2str(lambda_vec(3))],['\lambda = ', num2str(lambda_vec(4))])
+figure(3), axis([1,N_iter,min(min(log(obj_value))), max(max(log(obj_value)))]),save_pdf_without_whitespace3('prox_f1_3d_lambdaiter_3.png')
+
+
+%% Seperable convex function rand
 clc ;clear all; close all
 rng(1)
 
@@ -288,7 +377,8 @@ ext = ext(1:N_plot)
 figure,semilogy(1:length(ext), ext), ylabel('(f(x_k)-f^*)/f^*'), xlabel('k')
 save_pdf_without_whitespace3('A_rand.png')
 
-%%
+%% Seperable convex function randn
+
 clc ;clear all; close all
 rng(1)
 
